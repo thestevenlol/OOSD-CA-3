@@ -1,0 +1,108 @@
+import java.sql.*;
+import java.util.logging.Logger;
+
+
+    /*
+    *
+    * File created by Jack Foley
+    * 17/01/2023
+    *
+    */
+
+public class SQL {
+
+    private final Logger logger = Main.logger;
+    private Connection connection;
+
+    public SQL() {
+        connect();
+    }
+
+    // Connects the application to the database.
+    public void connect() {
+        if (isConnected()) {
+            logger.severe("Already connected to database!");
+            return;
+        }
+
+        final String connectionUrl = "jdbc:sqlite:storage/database.db";
+        try {
+            connection = DriverManager.getConnection(connectionUrl);
+            logger.info("Connected to database");
+        } catch (SQLException e) {
+            logger.severe("Failed to connect to database");
+            logger.severe("Stack trace:");
+            e.printStackTrace();
+        }
+    }
+
+    // Disconnects the database from the application. Should be used when the application is closed.
+    public void disconnect() {
+        if (connection == null) return;
+        try {
+            connection.close();
+            logger.info("Disconnected from database");
+        } catch (SQLException e) {
+            logger.severe("Failed to disconnect from database");
+            logger.severe("Stack trace:");
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isConnected() {
+        return connection != null;
+    }
+
+    // Creates a PreparedStatement to be used with the update() and query() methods.
+    public PreparedStatement prepareStatement(final String sql) {
+        if (!isConnected()) {
+            logger.severe("Failed to prepare statement: not connected to database");
+            return null;
+        }
+
+        PreparedStatement statement = null;
+        try {
+            statement = connection.prepareStatement(sql);
+        } catch (SQLException e) {
+            logger.severe("Failed to prepare statement");
+            logger.severe("Stack trace:");
+            e.printStackTrace();
+        }
+        return statement;
+    }
+
+    // Sends an update to the database.
+    public void update(final PreparedStatement statement) {
+        if (!isConnected()) {
+            logger.severe("Failed to update: not connected to database");
+            return;
+        }
+
+        try {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.severe("Failed to update");
+            logger.severe("Stack trace:");
+            e.printStackTrace();
+        }
+    }
+
+    // Sends a query to the database and returns the result.
+    public ResultSet query(final PreparedStatement statement) {
+        if (!isConnected()) {
+            logger.severe("Failed to query: not connected to database");
+            return null;
+        }
+
+        ResultSet result = null;
+        try {
+            result = statement.executeQuery();
+        } catch (SQLException e) {
+            logger.severe("Failed to query");
+            logger.severe("Stack trace:");
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+}
