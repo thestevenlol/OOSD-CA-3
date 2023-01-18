@@ -7,6 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         sql = new SQL();
-        new Login();
+        //new Login();
+        new Menu();
     }
 }

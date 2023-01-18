@@ -71,6 +71,7 @@ public class Login extends JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null); // Center the window
         setVisible(true);
     }
     
@@ -104,7 +105,8 @@ public class Login extends JFrame {
                 System.out.println("No account.");
                 return;
             }
-            System.out.println("Logged in.");
+            dispose();
+            new Menu();
         } catch (SQLException e) {
             Main.logger.severe("There was an error with logging in.");
             e.printStackTrace();

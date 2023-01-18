@@ -26,8 +26,9 @@ public class SQL {
                 "country TEXT NOT NULL," +
                 "city TEXT NOT NULL," +
                 "phone TEXT NOT NULL," +
-                "email TEXT NOT NULL," +
-                "password TEXT NOT NULL" +
+                "email TEXT NOT NULL UNIQUE," +
+                "password TEXT NOT NULL," +
+                "admin INT(1) NOT NULL DEFAULT(0)" +
                 ");";
 
         try (PreparedStatement statement = this.prepareStatement(sqlString)) {
@@ -88,6 +89,7 @@ public class SQL {
     }
 
     // Disconnects the database from the application. Should be used when the application is closed.
+    @SuppressWarnings("unused")
     public void disconnect() {
         if (connection == null) return;
         try {
