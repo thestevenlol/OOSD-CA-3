@@ -16,6 +16,57 @@ public class SQL {
 
     public SQL() {
         connect();
+
+        // Table creation
+        // Customers
+        String sqlString = "CREATE TABLE IF NOT EXISTS customers (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "first_name TEXT NOT NULL," +
+                "last_name TEXT NOT NULL," +
+                "country TEXT NOT NULL," +
+                "city TEXT NOT NULL," +
+                "phone TEXT NOT NULL," +
+                "email TEXT NOT NULL," +
+                "password TEXT NOT NULL" +
+                ");";
+
+        try (PreparedStatement statement = this.prepareStatement(sqlString)) {
+            this.update(statement);
+        } catch (SQLException e) {
+            logger.severe("Error creating customers table: ");
+            e.printStackTrace();
+        }
+
+        // Products
+        sqlString = "CREATE TABLE IF NOT EXISTS products (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT NOT NULL," +
+                "description TEXT NOT NULL," +
+                "price REAL NOT NULL," +
+                "stock INTEGER NOT NULL" +
+                ");";
+
+        try (PreparedStatement statement = this.prepareStatement(sqlString)) {
+            this.update(statement);
+        } catch (SQLException e) {
+            logger.severe("Error creating products table: ");
+            e.printStackTrace();
+        }
+
+        // Invoices
+        sqlString = "CREATE TABLE IF NOT EXISTS invoices (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "customer_id INTEGER NOT NULL," +
+                "date TEXT NOT NULL," +
+                "FOREIGN KEY (customer_id) REFERENCES customers(id)" +
+                ");";
+
+        try (PreparedStatement statement = this.prepareStatement(sqlString)) {
+            this.update(statement);
+        } catch (SQLException e) {
+            logger.severe("Error creating invoices table: ");
+            e.printStackTrace();
+        }
     }
 
     // Connects the application to the database.
@@ -104,5 +155,7 @@ public class SQL {
         }
         return result;
     }
+
+
 
 }
