@@ -11,29 +11,43 @@ public class Login extends JFrame {
     
     public Login() {
         super("Login");
-        setSize(700, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        final JPanel parent = new JPanel();
-        final JPanel parent2 = new JPanel();
+        final JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(5, 5, 5, 5);
+
+        panel.add(new JLabel("Email: "), constraints);
+        final JTextField emailField = new JTextField(10);
+
+        constraints.gridx++;
+        panel.add(emailField, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy++;
+        panel.add(new JLabel("Password: "), constraints);
+        final JPasswordField passwordField = new JPasswordField(10);
+
+        constraints.gridx++;
+        panel.add(passwordField, constraints);
 
         final JButton loginButton = new JButton("Login");
         final JButton registerButton = new JButton("Register");
 
-        final JTextField emailField = new JTextField(20);
-        final JPasswordField passwordField = new JPasswordField(20);
+        constraints.gridx = 0;
+        constraints.gridy++;
+        panel.add(loginButton, constraints);
 
-        parent.add(new JLabel("Email: "));
-        parent.add(emailField);
+        constraints.gridx++;
+        panel.add(registerButton, constraints);
 
-        parent.add(new JLabel("Password: "));
-        parent.add(passwordField);
 
-        parent2.add(loginButton);
-        parent2.add(registerButton);
 
-        add(parent, BorderLayout.CENTER);
-        add(parent2, BorderLayout.SOUTH);
+        add(panel);
+
 
         loginButton.addActionListener(
                 e -> {
@@ -56,10 +70,12 @@ public class Login extends JFrame {
                 }
         );
 
+        pack();
         setVisible(true);
     }
     
     private void login() {
+        // TODO: If email is valid but not password, say password invalid instead of no account.
         // Get SQL instance.
         final SQL sql = Main.sql;
 
