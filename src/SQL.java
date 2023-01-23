@@ -59,6 +59,9 @@ public class SQL {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "customer_id INTEGER NOT NULL," +
                 "date TEXT NOT NULL," +
+                "product TEXT NOT NULL," +
+                "quantity INTEGER NOT NULL," +
+                "cost INTEGER NOT NULL," +
                 "FOREIGN KEY (customer_id) REFERENCES customers(id)" +
                 ");";
 

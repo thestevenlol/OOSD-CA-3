@@ -76,7 +76,6 @@ public class Login extends JFrame {
     }
     
     private void login() {
-        // TODO: If email is valid but not password, say password invalid instead of no account.
         // Get SQL instance.
         final SQL sql = Main.sql;
 
@@ -93,18 +92,27 @@ public class Login extends JFrame {
         }
 
         // SQL query string.
-        final String sqlString = "SELECT * FROM customers WHERE email = ? AND password = ?";
+        final String sqlString = "SELECT * FROM customers WHERE email = ?";
 
         // Perform SQL query.
         // Using try-with-resource to automatically close the PreparedStatement when done with it.
         try (final PreparedStatement statement = sql.prepareStatement(sqlString)) {
             statement.setString(1, email); // Set first question mark.
-            statement.setString(2, password); // Set second question mark.
             final ResultSet resultSet = sql.query(statement); // Get ResultSet from query.
             if (!resultSet.next()) { // If there is nothing to move the cursor to, there is no account.
-                System.out.println("No account.");
+                JOptionPane.showMessageDialog(this, "No account found with that email.");
                 return;
             }
+
+            // Get the password from the database.
+            final String dbPassword = resultSet.getString("password");
+
+            // Check if the password is correct.
+            if (!password.equals(dbPassword)) {
+                JOptionPane.showMessageDialog(this, "Incorrect password.");
+                return;
+            }
+
             dispose();
             new Menu();
         } catch (SQLException e) {

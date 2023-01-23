@@ -3,6 +3,11 @@ import java.awt.*;
 
 public class Menu extends JFrame {
 
+    final JButton btnProducts = new JButton("Products");
+    final JButton btnBasket = new JButton("Basket");
+    final JButton btnAdmin = new JButton("Admin");
+    final JButton btnLogout = new JButton("Logout");
+
     public Menu() { // Default menu
         super("Products");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -11,16 +16,29 @@ public class Menu extends JFrame {
         pack();
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
-    }
 
-    public Menu(JPanel panel, String title) { // For opening new windows
-        super(title);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        add(panel);
-        pack();
-        setLocationRelativeTo(null); // Center the window
-        setVisible(true);
+        btnBasket.addActionListener(e -> {
+            setTitle("Basket");
+            setContentPane(new Basket());
+            pack();
+        });
+
+        btnProducts.addActionListener(e -> {
+            setTitle("Products");
+            setContentPane(new Products());
+            pack();
+        });
+
+        btnAdmin.addActionListener(e -> {
+            setTitle("Admin");
+            setContentPane(new Admin());
+            pack();
+        });
+
+        btnLogout.addActionListener(e -> {
+            dispose();
+            new Login();
+        });
     }
 
     private class Products extends JPanel {
@@ -32,25 +50,11 @@ public class Menu extends JFrame {
             c.gridy = 0;
             c.insets = new Insets(5, 5, 5, 5);
 
-            final JButton btnBasket = new JButton("Basket");
-            final JButton btnAdmin = new JButton("Admin");
-            final JButton btnLogout = new JButton("Logout");
-
             add(btnBasket, c);
             c.gridx++;
             add(btnAdmin, c);
             c.gridx++;
             add(btnLogout, c);
-
-            btnBasket.addActionListener(e -> {
-                new Menu(new Basket(), "Basket");
-                dispose();
-            });
-
-            btnAdmin.addActionListener(e -> {
-                new Menu(new Admin(), "Admin");
-                dispose();
-            });
         }
 
     }
@@ -64,25 +68,11 @@ public class Menu extends JFrame {
             c.gridy = 0;
             c.insets = new Insets(5, 5, 5, 5);
 
-            final JButton btnProducts = new JButton("Products");
-            final JButton btnAdmin = new JButton("Admin");
-            final JButton btnLogout = new JButton("Logout");
-
             add(btnProducts, c);
             c.gridx++;
             add(btnAdmin, c);
             c.gridx++;
             add(btnLogout, c);
-
-            btnProducts.addActionListener(e -> {
-                new Menu();
-                dispose();
-            });
-
-            btnAdmin.addActionListener(e -> {
-                new Menu(new Admin(), "Admin");
-                dispose();
-            });
         }
 
     }
@@ -96,10 +86,6 @@ public class Menu extends JFrame {
             c.gridy = 0;
             c.insets = new Insets(5, 5, 5, 5);
 
-            final JButton btnProducts = new JButton("Products");
-            final JButton btnBasket = new JButton("Basket");
-            final JButton btnLogout = new JButton("Logout");
-
             add(btnProducts, c);
             c.gridx++;
             add(btnBasket, c);
@@ -111,17 +97,6 @@ public class Menu extends JFrame {
 
             final JLabel addProductName = new JLabel("Product Name: ");
             add(addProductName, c);
-
-
-            btnProducts.addActionListener(e -> {
-                dispose();
-                new Menu();
-            });
-
-            btnBasket.addActionListener(e -> {
-                dispose();
-                new Menu(new Basket(), "Basket");
-            });
         }
 
     }

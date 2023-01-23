@@ -3,7 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class CLI {
+public class CLIDebug {
 
     /*
     * Used for testing purposes
@@ -13,7 +13,7 @@ public class CLI {
 
     private final SQL sql = Main.sql;
 
-    public CLI() {
+    public CLIDebug() {
         String[] options = {
                 "1. Login",
                 "2. Register"
@@ -32,18 +32,18 @@ public class CLI {
         if (scanner.hasNextInt()) {
             final int option = scanner.nextInt();
             switch (option) {
-                case 1:
+                case 1 -> {
                     System.out.println("Login");
                     login();
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     System.out.println("Register");
                     register();
-                    break;
-                default:
+                }
+                default -> {
                     System.out.println("Invalid option");
                     getOption();
-                    break;
+                }
             }
         } else {
             System.out.println("Invalid option");
@@ -173,7 +173,6 @@ public class CLI {
         }
 
         String sqlText = "INSERT INTO customers (email, password, first_name, last_name, country, city, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        ;
         try (PreparedStatement statement = sql.prepareStatement(sqlText)) {
             statement.setString(1, email);
             statement.setString(2, password);
