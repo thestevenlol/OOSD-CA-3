@@ -12,20 +12,21 @@ public class Menu extends JFrame {
         super("Products");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        add(new Products());
-        pack();
+        add(new Products(btnBasket, btnAdmin, btnLogout));
         setLocationRelativeTo(null); // Center the window
+        pack();
         setVisible(true);
 
         btnBasket.addActionListener(e -> {
             setTitle("Basket");
             setContentPane(new Basket());
             pack();
+
         });
 
         btnProducts.addActionListener(e -> {
             setTitle("Products");
-            setContentPane(new Products());
+            setContentPane(new Products(btnBasket, btnAdmin, btnLogout));
             pack();
         });
 
@@ -41,26 +42,8 @@ public class Menu extends JFrame {
         });
     }
 
-    private class Products extends JPanel {
-
-        public Products() {
-            setLayout(new GridBagLayout());
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.insets = new Insets(5, 5, 5, 5);
-
-            add(btnBasket, c);
-            c.gridx++;
-            add(btnAdmin, c);
-            c.gridx++;
-            add(btnLogout, c);
-        }
-
-    }
 
     private class Basket extends JPanel {
-
         public Basket() {
             setLayout(new GridBagLayout());
             final GridBagConstraints c = new GridBagConstraints();
@@ -74,7 +57,6 @@ public class Menu extends JFrame {
             c.gridx++;
             add(btnLogout, c);
         }
-
     }
 
 

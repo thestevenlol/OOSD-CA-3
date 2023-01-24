@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-class Admin extends JPanel {
+public class Admin extends JPanel {
 
     public Admin(JButton btnProducts, JButton btnBasket, JButton btnLogout) {
         setLayout(new GridBagLayout());
@@ -344,7 +344,7 @@ class Admin extends JPanel {
         updateProductButton.addActionListener(
                 e -> {
                     // Get ID and make sure it's a valid int.
-                    int id = 0;
+                    int id;
                     try {
                         id = Integer.parseInt(updateProductField.getText());
                     } catch (NumberFormatException ex) {
