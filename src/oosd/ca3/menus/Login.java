@@ -1,3 +1,8 @@
+package oosd.ca3.menus;
+
+import oosd.ca3.Main;
+import oosd.ca3.util.SQL;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.PreparedStatement;

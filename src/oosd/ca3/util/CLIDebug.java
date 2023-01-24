@@ -1,3 +1,7 @@
+package oosd.ca3.util;
+
+import oosd.ca3.Main;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +19,8 @@ public class CLIDebug {
 
     public CLIDebug() {
         String[] options = {
-                "1. Login",
-                "2. Register"
+                "1. oosd.ca3.menus.Login",
+                "2. oosd.ca3.menus.Register"
         };
 
         for (String option : options) {
@@ -33,11 +37,11 @@ public class CLIDebug {
             final int option = scanner.nextInt();
             switch (option) {
                 case 1 -> {
-                    System.out.println("Login");
+                    System.out.println("oosd.ca3.menus.Login");
                     login();
                 }
                 case 2 -> {
-                    System.out.println("Register");
+                    System.out.println("oosd.ca3.menus.Register");
                     register();
                 }
                 default -> {

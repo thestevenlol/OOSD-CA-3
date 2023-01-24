@@ -1,3 +1,7 @@
+package oosd.ca3.util;
+
+import oosd.ca3.Main;
+
 import java.sql.*;
 import java.util.logging.Logger;
 
@@ -38,7 +42,7 @@ public class SQL {
             e.printStackTrace();
         }
 
-        // Products
+        // oosd.ca3.menus.Products
         sqlString = "CREATE TABLE IF NOT EXISTS products (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT NOT NULL," +

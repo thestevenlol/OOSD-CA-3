@@ -1,3 +1,8 @@
+package oosd.ca3.menus;
+
+import oosd.ca3.Main;
+import oosd.ca3.util.SQL;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.PreparedStatement;
@@ -9,7 +14,7 @@ public class Register extends JFrame {
     private final SQL sql = Main.sql;
 
     public Register() {
-        super("Register");
+        super("oosd.ca3.menus.Register");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(new BorderLayout());

@@ -1,3 +1,5 @@
+package oosd.ca3.menus;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,24 +12,23 @@ public class Menu extends JFrame {
 
     public Menu() { // Default menu
         super("Products");
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         add(new Products(btnBasket, btnAdmin, btnLogout));
         setLocationRelativeTo(null); // Center the window
-        pack();
         setVisible(true);
 
         btnBasket.addActionListener(e -> {
             setTitle("Basket");
             setContentPane(new Basket());
             pack();
-
         });
 
         btnProducts.addActionListener(e -> {
             setTitle("Products");
             setContentPane(new Products(btnBasket, btnAdmin, btnLogout));
-            pack();
+            setSize(800, 600);
         });
 
         btnAdmin.addActionListener(e -> {

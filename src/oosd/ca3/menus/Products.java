@@ -1,3 +1,7 @@
+package oosd.ca3.menus;
+
+import oosd.ca3.Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.PreparedStatement;
@@ -59,25 +63,32 @@ public class Products extends JPanel {
 
         final JTable table = new JTable(data, columnNames);
         table.setDefaultEditor(Object.class, null); // Disable editing
+        c.gridheight = 5;
         add(new JScrollPane(table), c);
+        c.gridheight = 1;
 
-        c.gridy++;
+        c.gridy = 1;
+        c.gridx++;
 
         final JLabel selectedProduct = new JLabel("Selected product: None");
-        add(selectedProduct, c);
-
-        c.gridy++;
-
         final JLabel selectedProductId = new JLabel("Selected product ID: ");
         final JLabel selectedProductPrice = new JLabel("Selected product price: ");
+        final JLabel selectedProductQuantity = new JLabel("Purchase quantity: ");
+        final JTextField purchaseQuantity = new JTextField(5);
+        final JCheckBox editQuantity = new JCheckBox("Edit quantity");
 
+        c.anchor = GridBagConstraints.NORTH;
+        add(selectedProduct, c);
+        c.gridy++;
         add(selectedProductId, c);
-
         c.gridy++;
-
         add(selectedProductPrice, c);
-
         c.gridy++;
+        add(selectedProductQuantity, c);
+        c.gridy++;
+        add(editQuantity, c);
+        c.anchor = GridBagConstraints.CENTER;
+
 
 
         // On row selected.
@@ -99,6 +110,20 @@ public class Products extends JPanel {
                     selectedProduct.setText("Selected product: " + name);
                     selectedProductId.setText("Selected product ID: " + id);
                     selectedProductPrice.setText("Selected product price: $" + price * quantity);
+                    selectedProductQuantity.setText("Purchase quantity: " + quantity);
+                }
+        );
+
+        editQuantity.addActionListener(
+                e -> {
+                    if (editQuantity.isSelected()) {
+                        selectedProductQuantity.setText("Purchase quantity: ");
+                        c.gridx++;
+                        add(purchaseQuantity, c);
+                    } else {
+                        selectedProductQuantity.setText("Purchase quantity: 1");
+                        remove(purchaseQuantity);
+                    }
                 }
         );
     }
