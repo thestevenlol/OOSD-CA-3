@@ -31,7 +31,7 @@ public class Menu extends JFrame {
 
         btnAdmin.addActionListener(e -> {
             setTitle("Admin");
-            setContentPane(new Admin());
+            setContentPane(new Admin(btnProducts, btnBasket, btnLogout));
             pack();
         });
 
@@ -77,28 +77,6 @@ public class Menu extends JFrame {
 
     }
 
-    private class Admin extends JPanel {
 
-        public Admin() {
-            setLayout(new GridBagLayout());
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.insets = new Insets(5, 5, 5, 5);
-
-            add(btnProducts, c);
-            c.gridx++;
-            add(btnBasket, c);
-            c.gridx++;
-            add(btnLogout, c);
-
-            c.gridx = 0;
-            c.gridy++;
-
-            final JLabel addProductName = new JLabel("Product Name: ");
-            add(addProductName, c);
-        }
-
-    }
 
 }

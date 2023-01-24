@@ -189,14 +189,18 @@ public class Register extends JFrame {
 
                     // Password
                     if (!passwordField.getText().matches(passwordPattern)) {
-                        JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
-                        return;
+                        if (passwordField.getText().length() < 12) {
+                            JOptionPane.showMessageDialog(null, "If password is below 12 characters, it must have at least one uppercase letter, one lowercase letter, one number and one special character.");
+                            return;
+                        }
                     }
 
                     // Confirm Password
                     if (!confirmPasswordField.getText().matches(passwordPattern)) {
-                        JOptionPane.showMessageDialog(null, "Confirm Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
-                        return;
+                        if (confirmPasswordField.getText().length() < 12) {
+                            JOptionPane.showMessageDialog(null, "If password is below 12 characters, it must have at least one uppercase letter, one lowercase letter, one number and one special character.");
+                            return;
+                        }
                     }
 
                     // Passwords match

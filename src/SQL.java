@@ -43,8 +43,9 @@ public class SQL {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT NOT NULL," +
                 "description TEXT NOT NULL," +
-                "price REAL NOT NULL," +
-                "stock INTEGER NOT NULL" +
+                "price FLOAT NOT NULL," +
+                "stock INTEGER NOT NULL," +
+                "deleteFlag INTEGER NOT NULL DEFAULT(0)" +
                 ");";
 
         try (PreparedStatement statement = this.prepareStatement(sqlString)) {
