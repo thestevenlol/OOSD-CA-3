@@ -3,6 +3,19 @@ package oosd.ca3.menus;
 import javax.swing.*;
 import java.awt.*;
 
+/*
+*
+* Created by Jack Foley
+* Student ID: C00274246
+* Object-Oriented Software Development
+* Continuous Assessment 3
+*
+* This class is used to handle all the menus in the application.
+* Instantiating this class will display the Products menu.
+* Should be invoked after logging in.
+*
+*/
+
 public class Menu extends JFrame {
 
     final JButton btnProducts = new JButton("Products");
@@ -12,11 +25,11 @@ public class Menu extends JFrame {
 
     public Menu() { // Default menu
         super("Products");
-        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         add(new Products(btnBasket, btnAdmin, btnLogout));
         setLocationRelativeTo(null); // Center the window
+        pack();
         setVisible(true);
 
         btnBasket.addActionListener(e -> {
@@ -28,7 +41,7 @@ public class Menu extends JFrame {
         btnProducts.addActionListener(e -> {
             setTitle("Products");
             setContentPane(new Products(btnBasket, btnAdmin, btnLogout));
-            setSize(800, 600);
+            pack();
         });
 
         btnAdmin.addActionListener(e -> {

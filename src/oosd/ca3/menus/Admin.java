@@ -10,21 +10,28 @@ import java.sql.SQLException;
 
 public class Admin extends JPanel {
 
+    // Constructor
     public Admin(JButton btnProducts, JButton btnBasket, JButton btnLogout) {
-        setLayout(new GridBagLayout());
-        final GridBagConstraints c = new GridBagConstraints();
+        setLayout(new GridBagLayout()); // Set the layout to GridBagLayout.
+        final GridBagConstraints c = new GridBagConstraints(); // Constraints for the GridBagLayout.
 
+        // Creating a JPanel to hold the buttons so they are centered at the top of the screen.
         final JPanel buttonPanel = new JPanel();
         buttonPanel.add(btnProducts);
         buttonPanel.add(btnBasket);
         buttonPanel.add(btnLogout);
 
+        // Set x and y grids to 0.
+        // Set insets (padding) to 5 on each side.
+        // Set the fill to horizontal so the button panel fills all the available cell space.
+        // Set the gridwidth to 6 so the button panel spans all 6 columns.
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 5);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 6;
 
+        // Add the button panel to the Admin panel.
         add(buttonPanel, c);
 
         // Column 1 - Add
@@ -196,19 +203,29 @@ public class Admin extends JPanel {
         c.gridwidth = 1;
 
         addProductButton.addActionListener(
+                // Add a new product to the database.
+                // Uses a Lambda expression to create an ActionListener.
+                // e refers to the ActionListener event variable.
                 e -> {
+                    // Get the product name from the text field.
+                    // Check that it is not an empty field.
                     final String name = productNameField.getText();
                     if (name.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Invalid name");
                         return;
                     }
 
+                    // Get the product description from the text field.
+                    // Check that it is not an empty field.
                     final String description = productDescriptionField.getText();
                     if (description.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Invalid description");
                         return;
                     }
 
+
+                    // Get the product price from the text field.
+                    // Check that it is not an invalid price. (Not a float)
                     float price;
                     try {
                         price = Float.parseFloat(productPriceField.getText());
@@ -217,6 +234,8 @@ public class Admin extends JPanel {
                         return;
                     }
 
+                    // Get the product quantity from the text field.
+                    // Check that it is not an invalid quantity. (Not an int)
                     int quantity;
                     try {
                         quantity = Integer.parseInt(quantityField.getText());
@@ -225,12 +244,26 @@ public class Admin extends JPanel {
                         return;
                     }
 
+                    // SQL statement to select an item from the DB based on the name.
+                    // The name is converted to lowercase using 'LOWER(name)' to avoid case sensitivity.
                     String sql = "SELECT * FROM products WHERE LOWER(name) = ?";
 
+                    // Try with resources to automatically close the statement and result set.
                     try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+
+                        // Set the name to the first '?' in the SQL statement.
                         statement.setString(1, name.toLowerCase());
+
+                        // Get the result set from the statement.
                         ResultSet resultSet = statement.executeQuery();
+
+                        // If there is a row, continue.
                         if (resultSet.next()) {
+
+                            // Get the value for the 'deleteFlag' column.
+                            // We check this to be more specific to the user on why the product already exists.
+                            // If the value is 0, the product exists and is not deleted, so we tell the user to use the update function.
+                            // If the value is 1, the product exists and is deleted, so we tell the user to reinstate it instead.
                             final int deleted = resultSet.getInt("deleteFlag");
                             if (deleted == 0) {
                                 JOptionPane.showMessageDialog(null, "Product already exists, " +
@@ -248,14 +281,26 @@ public class Admin extends JPanel {
                         ex.printStackTrace();
                     }
 
+                    // SQL statement to insert a new product into the database.
                     sql = "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)";
 
+                    // Try with resources to automatically close the statement.
                     try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+
+                        // Set the values for the '?' in the SQL statement.
                         statement.setString(1, name);
                         statement.setString(2, description);
                         statement.setFloat(3, price);
                         statement.setInt(4, quantity);
                         statement.executeUpdate();
+
+                        // Clear the text fields.
+                        productNameField.setText("");
+                        productDescriptionField.setText("");
+                        productPriceField.setText("");
+                        quantityField.setText("");
+
+                        // Show a message to the user.
                         JOptionPane.showMessageDialog(null, "Product added.");
                     } catch (SQLException ex) {
                         Main.logger.severe("Error adding product: ");
@@ -265,8 +310,11 @@ public class Admin extends JPanel {
         );
 
         removeProductButton.addActionListener(
+                // Add a new product to the database.
+                // Uses a Lambda expression to create an ActionListener.
+                // e refers to the ActionListener event variable.
                 e -> {
-                    // Get ID and make sure it's valid.
+                    // Get ID and make sure it's valid. (Check if it's not an int)
                     int id = 0;
                     try {
                         id = Integer.parseInt(removeProductField.getText());
@@ -277,25 +325,35 @@ public class Admin extends JPanel {
                     // Check if product exists and isn't deleted.
                     String sql = "SELECT * FROM products WHERE id = ? AND deleteFlag = 0";
 
+                    // Try with resources to automatically close the statement and result set.
                     try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+
+                        // Set the ID to the first '?' in the SQL statement.
                         statement.setInt(1, id);
-                        try (final ResultSet result = statement.executeQuery()) {
-                            if (!result.next()) {
-                                JOptionPane.showMessageDialog(null, "Product not found.");
-                                return;
-                            }
+                        final ResultSet result = statement.executeQuery();
+                        if (!result.next()) {
+                            JOptionPane.showMessageDialog(null, "Product not found.");
+                            return;
                         }
                     } catch (SQLException ex) {
                         Main.logger.severe("Error checking existence whilst deleting product: ");
                         ex.printStackTrace();
                     }
 
-                    // Delete product.
+                    // Delete product by setting the deleteFlag to 1.
                     sql = "UPDATE products SET deleteFlag = 1 WHERE id = ?";
 
+                    // Try with resources to automatically close the statement.
                     try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+
+                        // Set the ID to the first '?' in the SQL statement.
                         statement.setInt(1, id);
                         statement.executeUpdate();
+
+                        // Clear the text field.
+                        removeProductField.setText("");
+
+                        // Show a message to the user.
                         JOptionPane.showMessageDialog(null, "Product deleted.");
                     } catch (SQLException ex) {
                         Main.logger.severe("Error deleting product: ");
@@ -322,7 +380,7 @@ public class Admin extends JPanel {
                         statement.setInt(1, id);
                         try (final ResultSet result = statement.executeQuery()) {
                             if (!result.next()) {
-                                JOptionPane.showMessageDialog(null, "Product not found.");
+                                JOptionPane.showMessageDialog(null, "Product is not deleted.");
                                 return;
                             }
                         }

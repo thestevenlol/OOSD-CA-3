@@ -1,6 +1,7 @@
 package oosd.ca3.menus;
 
 import oosd.ca3.Main;
+import oosd.ca3.util.TableHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Products extends JPanel {
+
+    final TableHandler tableHandler = new TableHandler();
 
     public Products(final JButton btnBasket, final JButton btnAdmin, final JButton btnLogout) {
         setLayout(new GridBagLayout());
@@ -25,71 +28,72 @@ public class Products extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 5);
+        c.gridwidth = 3;
 
         add(buttonPanel, c);
 
+        c.gridwidth = 1;
         c.gridy++;
 
-        final String[] columnNames = {"ID", "Name", "Description", "Price", "Quantity"};
-        List<String[]> products = new ArrayList<>();
-
-        String sql = "SELECT * FROM products";
-
-        try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
-            String[] productRow = new String[5];
-            final ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                do {
-                    productRow[0] = String.valueOf(resultSet.getInt("id"));
-                    productRow[1] = resultSet.getString("name");
-                    productRow[2] = resultSet.getString("description");
-                    productRow[3] = String.valueOf(resultSet.getFloat("price"));
-                    productRow[4] = String.valueOf(resultSet.getInt("stock"));
-                    products.add(productRow);
-                    productRow = new String[5];
-                } while (resultSet.next());
-            }
-        } catch (SQLException e) {
-            Main.logger.severe("Error getting products from database: ");
-            e.printStackTrace();
-        }
-
-        int dataSize = products.size();
-        String[][] data = new String[dataSize][5];
-
-        for (int i = 0; i < dataSize; i++) {
-            data[i] = products.get(i);
-        }
-
-        final JTable table = new JTable(data, columnNames);
+        final JTable table = tableHandler.getProductsTable();
         table.setDefaultEditor(Object.class, null); // Disable editing
-        c.gridheight = 5;
+        c.gridheight = 6;
         add(new JScrollPane(table), c);
         c.gridheight = 1;
 
         c.gridy = 1;
         c.gridx++;
 
-        final JLabel selectedProduct = new JLabel("Selected product: None");
+        final JLabel selectedProduct = new JLabel("Selected product: ");
+        final JTextField selectedProductTextField = new JTextField(10);
+
         final JLabel selectedProductId = new JLabel("Selected product ID: ");
+        final JTextField selectedProductIdTextField = new JTextField(10);
+
         final JLabel selectedProductPrice = new JLabel("Selected product price: ");
+        final JTextField selectedProductPriceTextField = new JTextField(10);
+
         final JLabel selectedProductQuantity = new JLabel("Purchase quantity: ");
-        final JTextField purchaseQuantity = new JTextField(5);
-        final JCheckBox editQuantity = new JCheckBox("Edit quantity");
+        final JTextField selectedProductQuantityTextField = new JTextField(10);
+        selectedProductQuantityTextField.setText("1");
+
+        final JButton btnAddToBasket = new JButton("Add to basket");
+
+        selectedProductTextField.setEditable(false);
+        selectedProductIdTextField.setEditable(false);
+        selectedProductPriceTextField.setEditable(false);
 
         c.anchor = GridBagConstraints.NORTH;
         add(selectedProduct, c);
+        c.gridx++;
+        add(selectedProductTextField, c);
+        c.gridx--;
+
         c.gridy++;
         add(selectedProductId, c);
+        c.gridx++;
+        add(selectedProductIdTextField, c);
+        c.gridx--;
+
         c.gridy++;
         add(selectedProductPrice, c);
+        c.gridx++;
+        add(selectedProductPriceTextField, c);
+        c.gridx--;
+
+        c.gridy++;
+        add(new JLabel(" "), c); // Empty Label to fill space.
+
         c.gridy++;
         add(selectedProductQuantity, c);
+        c.gridx++;
+        add(selectedProductQuantityTextField, c);
+        c.gridx--;
+
         c.gridy++;
-        add(editQuantity, c);
+        c.gridwidth = 2;
+        add(btnAddToBasket, c);
         c.anchor = GridBagConstraints.CENTER;
-
-
 
         // On row selected.
         table.getSelectionModel().addListSelectionListener(
@@ -107,23 +111,23 @@ public class Products extends JPanel {
                     final float price = Float.parseFloat((String) table.getValueAt(table.getSelectedRow(), 3));
                     final int quantity = 1;
 
-                    selectedProduct.setText("Selected product: " + name);
-                    selectedProductId.setText("Selected product ID: " + id);
-                    selectedProductPrice.setText("Selected product price: $" + price * quantity);
-                    selectedProductQuantity.setText("Purchase quantity: " + quantity);
+                    selectedProductTextField.setText(name);
+                    selectedProductIdTextField.setText(String.valueOf(id));
+                    selectedProductPriceTextField.setText(String.valueOf((price * quantity)));
                 }
         );
 
-        editQuantity.addActionListener(
+        // Add to basket event
+        btnAddToBasket.addActionListener(
                 e -> {
-                    if (editQuantity.isSelected()) {
-                        selectedProductQuantity.setText("Purchase quantity: ");
-                        c.gridx++;
-                        add(purchaseQuantity, c);
-                    } else {
-                        selectedProductQuantity.setText("Purchase quantity: 1");
-                        remove(purchaseQuantity);
+                    final int quantity = Integer.parseInt(selectedProductQuantityTextField.getText());
+                    final int maxQuantity = Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 4));
+                    final float price = Float.parseFloat(selectedProductPriceTextField.getText()) * quantity;
+                    if (quantity > maxQuantity) {
+                        JOptionPane.showMessageDialog(null, "You cannot purchase more than " + maxQuantity + " of this product.");
+                        return;
                     }
+                    JOptionPane.showMessageDialog(null, "Added " + quantity + " of " + selectedProductTextField.getText() + " to basket.");
                 }
         );
     }
