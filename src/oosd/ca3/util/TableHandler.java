@@ -3,6 +3,8 @@ package oosd.ca3.util;
 import oosd.ca3.Main;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,14 +50,15 @@ public class TableHandler {
         return table;
     }
 
-    public JTable getBasketTable() {
-        JTable table;
-        final String[] columnNames = {"Name", "Price Per", "Date Added", "Quantity", "Total Cost"};
+    public TableModel getBasketTable() {
+        TableModel model;
+        final String[] columnNames = {"Product ID", "Name", "Price Per", "Date Added", "Quantity", "Total Cost"};
         List<String[]> products = new ArrayList<>();
 
         String sql = """
                 SELECT
                         products.name,
+                                products.id,
                                 products.price,
                                 invoices.quantity,
                                 invoices.date,
@@ -72,12 +75,13 @@ public class TableHandler {
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 do {
-                    String[] productRow = new String[5];
-                    productRow[0] = resultSet.getString("name");
-                    productRow[1] = String.valueOf(resultSet.getFloat("price"));
-                    productRow[2] = resultSet.getString("date");
-                    productRow[3] = String.valueOf(resultSet.getFloat("quantity"));
-                    productRow[4] = String.valueOf(resultSet.getFloat("total"));
+                    String[] productRow = new String[6];
+                    productRow[0] = String.valueOf(resultSet.getInt("id"));
+                    productRow[1] = resultSet.getString("name");
+                    productRow[2] = String.valueOf(resultSet.getFloat("price"));
+                    productRow[3] = resultSet.getString("date");
+                    productRow[4] = String.valueOf(resultSet.getFloat("quantity"));
+                    productRow[5] = String.valueOf(resultSet.getFloat("total"));
                     products.add(productRow);
                 } while (resultSet.next());
             }
@@ -93,9 +97,9 @@ public class TableHandler {
             data[i] = products.get(i);
         }
 
-        table = new JTable(data, columnNames);
+        model = new DefaultTableModel(data, columnNames);
 
-        return table;
+        return model;
     }
 
 }

@@ -139,7 +139,7 @@ public class Login extends JFrame {
             }
 
             dispose();
-            new Menu();
+            new MenuManager();
             Main.userId = resultSet.getInt("id");
         } catch (SQLException e) {
             Main.logger.severe("There was an error with logging in.");

@@ -16,14 +16,14 @@ import java.awt.*;
 *
 */
 
-public class Menu extends JFrame {
+public class MenuManager extends JFrame {
 
     final JButton btnProducts = new JButton("Products");
     final JButton btnBasket = new JButton("Basket");
     final JButton btnAdmin = new JButton("Admin");
     final JButton btnLogout = new JButton("Logout");
 
-    public Menu() { // Default menu
+    public MenuManager() { // Default menu
         super("Products");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
