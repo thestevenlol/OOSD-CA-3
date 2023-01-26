@@ -34,7 +34,7 @@ public class Menu extends JFrame {
 
         btnBasket.addActionListener(e -> {
             setTitle("Basket");
-            setContentPane(new Basket());
+            setContentPane(new Basket(btnProducts, btnAdmin, btnLogout));
             pack();
         });
 
@@ -55,24 +55,5 @@ public class Menu extends JFrame {
             new Login();
         });
     }
-
-
-    private class Basket extends JPanel {
-        public Basket() {
-            setLayout(new GridBagLayout());
-            final GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.insets = new Insets(5, 5, 5, 5);
-
-            add(btnProducts, c);
-            c.gridx++;
-            add(btnAdmin, c);
-            c.gridx++;
-            add(btnLogout, c);
-        }
-    }
-
-
 
 }

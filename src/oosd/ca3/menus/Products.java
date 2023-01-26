@@ -8,7 +8,9 @@ import java.awt.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Products extends JPanel {
@@ -119,14 +121,64 @@ public class Products extends JPanel {
 
         // Add to basket event
         btnAddToBasket.addActionListener(
+                // date name quantity cost (cust id)
                 e -> {
+                    final String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                    final int productId = Integer.parseInt(selectedProductIdTextField.getText());
                     final int quantity = Integer.parseInt(selectedProductQuantityTextField.getText());
                     final int maxQuantity = Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 4));
-                    final float price = Float.parseFloat(selectedProductPriceTextField.getText()) * quantity;
                     if (quantity > maxQuantity) {
                         JOptionPane.showMessageDialog(null, "You cannot purchase more than " + maxQuantity + " of this product.");
                         return;
                     }
+
+                    String sql = "SELECT quantity FROM invoices WHERE customer_id = ? AND product_id = ?";
+                    boolean newItem = true;
+
+                    try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+                        statement.setInt(1, Main.userId);
+                        statement.setInt(2, productId);
+                        final ResultSet result = statement.executeQuery();
+                        if (result.next()) {
+                            final int currentQuantity = result.getInt("quantity");
+                            if (currentQuantity + quantity > maxQuantity) {
+                                JOptionPane.showMessageDialog(null, "Your basket cannot contain more than " + maxQuantity + " of this product.");
+                                return;
+                            } else {
+                                // update quantity in basket
+                                newItem = false;
+                                sql = "UPDATE invoices SET quantity = ? WHERE customer_id = ? AND product_id = ?";
+                                try (final PreparedStatement statement2 = Main.sql.prepareStatement(sql)) {
+                                    statement2.setInt(1, currentQuantity + quantity);
+                                    statement2.setInt(2, Main.userId);
+                                    statement2.setInt(3, productId);
+                                    statement2.executeUpdate();
+                                } catch (final SQLException ex) {
+                                    Main.logger.severe("Error updating quantity in basket: ");
+                                    ex.printStackTrace();
+                                }
+                            }
+                        }
+                    } catch (final SQLException ex) {
+                        Main.logger.severe("Error checking if product is already in basket: ");
+                        ex.printStackTrace();
+                    }
+
+                    if (newItem) {
+                        sql = "INSERT INTO invoices (customer_id, date, product_id, quantity) VALUES (?, ?, ?, ?)";
+
+                        try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+                            statement.setInt(1, Main.userId);
+                            statement.setString(2, date);
+                            statement.setInt(3, productId);
+                            statement.setInt(4, quantity);
+                            statement.executeUpdate();
+                        } catch (final SQLException ex) {
+                            Main.logger.severe("Error adding product to basket: ");
+                            ex.printStackTrace();
+                        }
+                    }
+
                     JOptionPane.showMessageDialog(null, "Added " + quantity + " of " + selectedProductTextField.getText() + " to basket.");
                 }
         );

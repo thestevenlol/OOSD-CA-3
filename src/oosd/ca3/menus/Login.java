@@ -116,12 +116,13 @@ public class Login extends JFrame {
         }
 
         // SQL query string.
-        final String sqlString = "SELECT * FROM customers WHERE email = ?";
+        // Set email to lowercase to prevent case sensitivity.
+        final String sqlString = "SELECT * FROM customers WHERE LOWER(email) = ?";
 
         // Perform SQL query.
         // Using try-with-resource to automatically close the PreparedStatement when done with it.
         try (final PreparedStatement statement = sql.prepareStatement(sqlString)) {
-            statement.setString(1, email); // Set first question mark.
+            statement.setString(1, email.toLowerCase()); // Set first question mark.
             final ResultSet resultSet = sql.query(statement); // Get ResultSet from query.
             if (!resultSet.next()) { // If there is nothing to move the cursor to, there is no account.
                 JOptionPane.showMessageDialog(this, "No account found with that email.");
@@ -139,6 +140,7 @@ public class Login extends JFrame {
 
             dispose();
             new Menu();
+            Main.userId = resultSet.getInt("id");
         } catch (SQLException e) {
             Main.logger.severe("There was an error with logging in.");
             e.printStackTrace();

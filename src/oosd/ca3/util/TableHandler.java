@@ -48,4 +48,54 @@ public class TableHandler {
         return table;
     }
 
+    public JTable getBasketTable() {
+        JTable table;
+        final String[] columnNames = {"Name", "Price Per", "Date Added", "Quantity", "Total Cost"};
+        List<String[]> products = new ArrayList<>();
+
+        String sql = """
+                SELECT
+                        products.name,
+                                products.price,
+                                invoices.quantity,
+                                invoices.date,
+                                invoices.quantity,
+                                invoices.quantity * products.price AS total
+                        FROM products
+                        INNER JOIN invoices on products.id = product_id
+                        INNER JOIN customers on invoices.customer_id = ?
+                        GROUP BY invoices.id;
+                """;
+
+        try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+            statement.setInt(1, Main.userId);
+            final ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                do {
+                    String[] productRow = new String[5];
+                    productRow[0] = resultSet.getString("name");
+                    productRow[1] = String.valueOf(resultSet.getFloat("price"));
+                    productRow[2] = resultSet.getString("date");
+                    productRow[3] = String.valueOf(resultSet.getFloat("quantity"));
+                    productRow[4] = String.valueOf(resultSet.getFloat("total"));
+                    products.add(productRow);
+                } while (resultSet.next());
+            }
+        } catch (final SQLException e) {
+            Main.logger.severe("Error getting basket from database: ");
+            e.printStackTrace();
+        }
+
+        int dataSize = products.size();
+        String[][] data = new String[dataSize][4];
+
+        for (int i = 0; i < dataSize; i++) {
+            data[i] = products.get(i);
+        }
+
+        table = new JTable(data, columnNames);
+
+        return table;
+    }
+
 }
