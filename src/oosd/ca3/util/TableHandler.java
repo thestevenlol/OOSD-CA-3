@@ -29,7 +29,7 @@ public class TableHandler {
                     productRow[1] = resultSet.getString("name");
                     productRow[2] = resultSet.getString("description");
                     productRow[3] = String.valueOf(resultSet.getFloat("price"));
-                    productRow[4] = String.valueOf(resultSet.getInt("stock"));
+                    productRow[4] = resultSet.getInt("stock") == 0 ? "Out of stock" : String.valueOf(resultSet.getInt("stock"));
                     products.add(productRow);
                     productRow = new String[5];
                 } while (resultSet.next());
@@ -66,7 +66,7 @@ public class TableHandler {
                                 invoices.quantity * products.price AS total
                         FROM products
                         INNER JOIN invoices on products.id = product_id
-                        INNER JOIN customers on invoices.customer_id = ?
+                        INNER JOIN customers on invoices.customer_id = ? AND paid = 0
                         GROUP BY invoices.id;
                 """;
 

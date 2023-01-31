@@ -66,6 +66,7 @@ public class SQL {
                 "date TEXT NOT NULL," +
                 "product_id TEXT NOT NULL," +
                 "quantity INTEGER NOT NULL," +
+                "paid INTEGER NOT NULL DEFAULT(0)," +
                 "FOREIGN KEY (customer_id) REFERENCES customers(id)" +
                 ");";
 

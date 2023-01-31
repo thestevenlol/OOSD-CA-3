@@ -9,9 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Products extends JPanel {
 
@@ -132,7 +130,7 @@ public class Products extends JPanel {
                         return;
                     }
 
-                    String sql = "SELECT quantity FROM invoices WHERE customer_id = ? AND product_id = ?";
+                    String sql = "SELECT quantity FROM invoices WHERE customer_id = ? AND product_id = ? AND paid = 0";
                     boolean newItem = true;
 
                     try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
