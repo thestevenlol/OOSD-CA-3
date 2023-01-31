@@ -1,6 +1,6 @@
 package oosd.ca3;
 
-import oosd.ca3.menus.MenuManager;
+import oosd.ca3.menus.Login;
 import oosd.ca3.util.SQL;
 
 import java.util.logging.Logger;
@@ -22,6 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
         sql = new SQL(); // Used to create a database connection. The connection is done inside the SQL class constructor.
-        new MenuManager(); // Launches the login screen.
+        new Login(); // Launches the login screen.
     }
 }
