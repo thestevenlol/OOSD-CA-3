@@ -2,6 +2,8 @@ package oosd.ca3.util;
 
 import oosd.ca3.Main;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Logger;
 
@@ -80,6 +82,24 @@ public class SQL {
 
     // Connects the application to the database.
     public void connect() {
+        final File folder = new File("./storage");
+        final File file = new File("./storage/database.db");
+        if (!folder.exists()) {
+            try {
+                if (folder.mkdir()) {
+                    if (file.createNewFile()) {
+                        logger.info("Created database file");
+                    } else {
+                        logger.severe("Failed to create database file");
+                    }
+                }
+            } catch (IOException e) {
+                logger.severe("Failed to create database file");
+                logger.severe("Stack trace:");
+                e.printStackTrace();
+            }
+        }
+
         if (isConnected()) {
             logger.severe("Already connected to database!");
             return;

@@ -18,7 +18,7 @@ public class TableHandler {
         final String[] columnNames = {"ID", "Name", "Description", "Price", "Quantity"};
         List<String[]> products = new ArrayList<>();
 
-        String sql = "SELECT * FROM products";
+        String sql = "SELECT * FROM products WHERE deleteFlag = 0";
 
         try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
             String[] productRow = new String[5];
@@ -55,8 +55,8 @@ public class TableHandler {
         final String[] columnNames = {"Product ID", "Name", "Price Per", "Date Added", "Quantity", "Total Cost"};
         List<String[]> products = new ArrayList<>();
 
-        String sql = """
-                SELECT
+        /*
+        SELECT
                         products.name,
                                 products.id,
                                 products.price,
@@ -68,7 +68,8 @@ public class TableHandler {
                         INNER JOIN invoices on products.id = product_id
                         INNER JOIN customers on invoices.customer_id = ? AND paid = 0
                         GROUP BY invoices.id;
-                """;
+         */
+        String sql = "SELECT products.name, products.id, invoices.quantity, invoices.date, invoices.quantity, invoices.quantity * products.price AS total FROM products INNER JOIN invoices on products.id = product_id INNER JOIN customers on invoices.customer_id = ? AND paid = 0 GROUP BY invoices.id";
 
         try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
             statement.setInt(1, Main.userId);

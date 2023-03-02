@@ -36,15 +36,15 @@ public class CLIDebug {
         if (scanner.hasNextInt()) {
             final int option = scanner.nextInt();
             switch (option) {
-                case 1 -> {
+                case 1: {
                     System.out.println("oosd.ca3.menus.Login");
                     login();
                 }
-                case 2 -> {
+                case 2: {
                     System.out.println("oosd.ca3.menus.Register");
                     register();
                 }
-                default -> {
+                default: {
                     System.out.println("Invalid option");
                     getOption();
                 }
