@@ -69,7 +69,7 @@ public class TableHandler {
                         INNER JOIN customers on invoices.customer_id = ? AND paid = 0
                         GROUP BY invoices.id;
          */
-        String sql = "SELECT products.name, products.id, invoices.quantity, invoices.date, invoices.quantity, invoices.quantity * products.price AS total FROM products INNER JOIN invoices on products.id = product_id INNER JOIN customers on invoices.customer_id = ? AND paid = 0 GROUP BY invoices.id";
+        String sql = "SELECT products.name, products.id, products.price, invoices.date, invoices.quantity, invoices.quantity * products.price AS total FROM products INNER JOIN invoices on products.id = product_id INNER JOIN customers on invoices.customer_id = ? AND paid = 0 GROUP BY invoices.id";
 
         try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
             statement.setInt(1, Main.userId);
