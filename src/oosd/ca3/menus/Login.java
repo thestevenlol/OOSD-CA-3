@@ -9,22 +9,40 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*
+*
+* Created by Jack Foley
+* Student ID: C00274246
+* Object-Oriented Software Development
+* Continuous Assessment 3
+*
+* This class is used to handle the login screen.
+*
+*/
+
 public class Login extends JFrame {
 
+    // Variable initialisation.
     private String email = null;
     private String password = null;
-    
+
+    // Constructor
     public Login() {
-        super("Login");
+        super("Login"); // Pass the title to the JFrame constructor.
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        final JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
+        // Create a JPanel to hold the components.
+        final JPanel panel = new JPanel(new GridBagLayout()); // Set the layout to GridBagLayout.
+        GridBagConstraints constraints = new GridBagConstraints(); // Constraints for the GridBagLayout.
+
+        // Set x and y grids to 0.
+        // Set insets (padding) to 5 on each side.
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets = new Insets(5, 5, 5, 5);
 
+        // Start adding components to the panel.
         panel.add(new JLabel("Email: "), constraints);
         final JTextField emailField = new JTextField(10);
 
@@ -48,15 +66,16 @@ public class Login extends JFrame {
 
         constraints.gridx++;
         panel.add(registerButton, constraints);
+        // End adding components to the panel.
 
-
-
+        // Add the panel to the JFrame.
         add(panel);
 
-
         loginButton.addActionListener(
+                // Lambda expression to handle the login button.
+                // e is the ActionEvent variable.
                 e -> {
-                    email = emailField.getText();
+                    email = emailField.getText(); // Get the email from the email field.
 
                     // Using StringBuilder to convert char[] to String
                     final StringBuilder builder = new StringBuilder();
@@ -64,7 +83,7 @@ public class Login extends JFrame {
                         builder.append(c);
                     }
                     password = builder.toString().trim();
-                    login();
+                    login(); // Call the login method.
                 }
         );
 
@@ -75,7 +94,7 @@ public class Login extends JFrame {
                 }
         );
 
-        pack();
+        pack(); // Resize the window to fit the components.
         setLocationRelativeTo(null); // Center the window
         setVisible(true);
     }
@@ -97,12 +116,13 @@ public class Login extends JFrame {
         }
 
         // SQL query string.
-        final String sqlString = "SELECT * FROM customers WHERE email = ?";
+        // Set email to lowercase to prevent case sensitivity.
+        final String sqlString = "SELECT * FROM customers WHERE LOWER(email) = ?";
 
         // Perform SQL query.
         // Using try-with-resource to automatically close the PreparedStatement when done with it.
         try (final PreparedStatement statement = sql.prepareStatement(sqlString)) {
-            statement.setString(1, email); // Set first question mark.
+            statement.setString(1, email.toLowerCase()); // Set first question mark.
             final ResultSet resultSet = sql.query(statement); // Get ResultSet from query.
             if (!resultSet.next()) { // If there is nothing to move the cursor to, there is no account.
                 JOptionPane.showMessageDialog(this, "No account found with that email.");
@@ -119,7 +139,8 @@ public class Login extends JFrame {
             }
 
             dispose();
-            new Menu();
+            new MenuManager();
+            Main.userId = resultSet.getInt("id");
         } catch (SQLException e) {
             Main.logger.severe("There was an error with logging in.");
             e.printStackTrace();
