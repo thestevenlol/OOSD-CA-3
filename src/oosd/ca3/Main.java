@@ -24,4 +24,5 @@ public class Main {
         sql = new SQL(); // Used to create a database connection. The connection is done inside the SQL class constructor.
         new Login(); // Launches the login screen.
     }
+
 }

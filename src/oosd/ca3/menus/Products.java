@@ -37,6 +37,7 @@ public class Products extends JPanel {
 
         final JTable table = tableHandler.getProductsTable();
         table.setDefaultEditor(Object.class, null); // Disable editing
+        table.getTableHeader().setReorderingAllowed(false); // Disable reordering
         c.gridheight = 6;
         add(new JScrollPane(table), c);
         c.gridheight = 1;
@@ -122,9 +123,28 @@ public class Products extends JPanel {
                 // date name quantity cost (cust id)
                 e -> {
                     final String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-                    final int productId = Integer.parseInt(selectedProductIdTextField.getText());
+                    final int productId;
+                    try {
+                        productId = Integer.parseInt(selectedProductIdTextField.getText());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Please select a product.");
+                        return;
+                    }
+
                     final int quantity = Integer.parseInt(selectedProductQuantityTextField.getText());
-                    final int maxQuantity = Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 4));
+                    final int maxQuantity;
+
+                    if (table.getValueAt(table.getSelectedRow(), 4).equals("Out of stock")) {
+                        maxQuantity = 0;
+                    } else {
+                        maxQuantity = Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 4));
+                    }
+
+                    if (maxQuantity == 0) {
+                        JOptionPane.showMessageDialog(null, "This product is out of stock.");
+                        return;
+                    }
+
                     if (quantity > maxQuantity) {
                         JOptionPane.showMessageDialog(null, "You cannot purchase more than " + maxQuantity + " of this product.");
                         return;

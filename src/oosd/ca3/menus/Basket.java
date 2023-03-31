@@ -9,6 +9,9 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Basket extends JPanel {
 
@@ -111,8 +114,33 @@ public class Basket extends JPanel {
     }
 
     private boolean purchase(final JTable table) {
+        // get product ids from first column
+        HashMap<Integer, String> productsMap = new HashMap<>();
+        List<Integer> ids = new ArrayList<>();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            ids.add((int) Integer.parseInt(table.getValueAt(i, 0).toString()));
+            productsMap.put((int) Integer.parseInt(table.getValueAt(i, 0).toString()), table.getValueAt(i, 1).toString());
+        }
+
+        // Check if stock is available
+        String sql = "SELECT stock FROM products WHERE id = ?";
+        try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
+            for (int i = 0; i < ids.size(); i++) {
+                statement.setInt(1, ids.get(i));
+                final int stock = statement.executeQuery().getInt("stock");
+                if (stock < (int) Float.parseFloat(table.getValueAt(i, 4).toString())) {
+                    JOptionPane.showMessageDialog(null, "Not enough stock for " + productsMap.get(ids.get(i)));
+                    return false;
+                }
+            }
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+
         // Set 'paid' in invoices to 1 where customer_id = Main.userId
-        String sql = "UPDATE invoices SET paid = 1 WHERE customer_id = ?";
+        sql = "UPDATE invoices SET paid = 1 WHERE customer_id = ?";
         try (final PreparedStatement statement = Main.sql.prepareStatement(sql)) {
             statement.setInt(1, Main.userId);
             statement.executeUpdate();

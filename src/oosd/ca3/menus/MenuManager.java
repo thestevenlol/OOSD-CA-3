@@ -1,7 +1,11 @@
 package oosd.ca3.menus;
 
+import oosd.ca3.Main;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /*
 *
@@ -10,7 +14,7 @@ import java.awt.*;
 * Object-Oriented Software Development
 * Continuous Assessment 3
 *
-* This class is used to handle all the menus in the application.
+* This class is used to handle all the menus in the application. (Except Login and Register)
 * Instantiating this class will display the Products menu.
 * Should be invoked after logging in.
 *
@@ -53,6 +57,14 @@ public class MenuManager extends JFrame {
         btnLogout.addActionListener(e -> {
             dispose();
             new Login();
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                Main.sql.disconnect();
+            }
         });
     }
 
